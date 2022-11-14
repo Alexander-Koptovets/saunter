@@ -1,0 +1,14 @@
+.ticket {
+    width: 100%;
+    min-height: 100px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 5px;
+}
+
+.ticket:hover {
+    cursor: pointer;
+    background-color: #056df5;
+    color: aliceblue;
+}
