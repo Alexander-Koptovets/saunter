@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 
-import { MarkerType, WayType } from '../../types';
+import { MarkerType } from '../../types';
 
 import { useMap } from "../../hooks/map";
 
