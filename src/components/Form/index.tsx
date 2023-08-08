@@ -1,21 +1,55 @@
-import React, { FC, useState } from 'react';
+import React, {FC, useCallback, useState} from 'react';
+
+import { useMap } from "../../hooks/map";
+import { useWay } from "../../hooks/way";
+import { useModal } from "../../hooks/modal";
 
 import { Box, TextField, TextareaAutosize, Typography, Button } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 
-import styles from './Style.module.css';
+const styles = {
+    form: {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'space-around',
+        padding: '10px',
+    },
+};
 
-interface FormProps {
-    onAddWay: (title: string, description: string) => void,
-    distance: string;
-}
+export const Form: FC = () => {
+    const { addWay } = useWay();
+    const {
+        distance,
+        markers,
+        addMarkers,
+        addDistance,
+    } = useMap();
+    const { updateIsOpen } = useModal();
 
-export const Form: FC<FormProps> = ({ onAddWay, distance }) => {
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
 
+    const onAddWay = useCallback(() => {
+        const data = {
+            id: Date.now(),
+            title: title,
+            description: description,
+            position: markers,
+            distance: distance,
+            isFavorite: false,
+        };
+
+        addWay(data);
+        updateIsOpen(false);
+        addMarkers([]);
+        addDistance('');
+    }, [markers, distance, description]);
+
     return (
-        <Box className={styles.form} >
+        <Box component='div' sx={styles.form} >
             <TextField 
                 label='Title' 
                 placeholder='Title' 
@@ -35,7 +69,7 @@ export const Form: FC<FormProps> = ({ onAddWay, distance }) => {
             <Button 
                 variant="contained"
                 startIcon={<CheckIcon />}
-                onClick={() => onAddWay(title, description)}
+                onClick={onAddWay}
             >
                 Add path
             </Button>

@@ -2,20 +2,28 @@ import React, { FC, useState, useMemo } from 'react';
 
 import { WayType } from '../../types';
 
+import { useWay } from "../../hooks/way";
+
 import { Ticket } from '../Ticket';
 import { Box, TextField, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-import { useSelector } from 'react-redux';
+const styles = {
+    ticketsBlock: {
+        minHeight: '300px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        margin: '10px 10px',
+    },
+    tickets: {
+        borderRight: '1px solid grey',
+    },
+};
 
-import styles from './Style.module.css';
+export const TicketsBlock: FC = () => {
+    const { ways } = useWay();
 
-interface TicketsBlockProps {
-    onDescription: (desc: WayType) => void;
-}
-
-export const TicketsBlock: FC<TicketsBlockProps> = ({ onDescription }) => {
-    const ways = useSelector<WayType[]>(state => state);
     const [search, setSearch] = useState<string>('');
     const data = useMemo(() => {
         if (search && Array.isArray(ways)) {
@@ -31,7 +39,7 @@ export const TicketsBlock: FC<TicketsBlockProps> = ({ onDescription }) => {
     }, [search, ways]);
 
     return (
-        <Box className={styles['tickets-block']}>
+        <Box component='div' sx={styles.ticketsBlock}>
             <TextField 
                 id="search" 
                 label="Search" 
@@ -47,9 +55,16 @@ export const TicketsBlock: FC<TicketsBlockProps> = ({ onDescription }) => {
                     )
                 }}
             />
-            <Box className={styles.tickets}>
-                {data?.sort((a, b) => (b.isFavorite - a.isFavorite))
-                .map((way: WayType) => {
+            <Box sx={styles.tickets}>
+                {data && [...data].sort((a, b) => {
+                    if (a.isFavorite && !b.isFavorite) {
+                        return -1;
+                    } else if (!a.isFavorite && b.isFavorite) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }).map((way: WayType) => {
                     return (
                         <Ticket
                             key={way.id}
@@ -59,7 +74,6 @@ export const TicketsBlock: FC<TicketsBlockProps> = ({ onDescription }) => {
                             distance={way.distance}
                             position={way.position}
                             isFavorite={way.isFavorite}
-                            onDescription={onDescription}
                         />
                     )
                 })}

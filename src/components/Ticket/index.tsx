@@ -2,6 +2,8 @@ import React, { FC } from "react";
 
 import { MarkerType, WayType } from '../../types';
 
+import { useMap } from "../../hooks/map";
+
 import { Box, Typography  } from '@mui/material';
 import OpenWithIcon from '@mui/icons-material/OpenWith';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -16,7 +18,6 @@ interface TicketProps {
     distance: string,
     position: MarkerType[],
     isFavorite: boolean,
-    onDescription: (desc: WayType) => void,
 }
 
 export const Ticket: FC<TicketProps> = ({
@@ -26,10 +27,14 @@ export const Ticket: FC<TicketProps> = ({
     distance,
     position,
     isFavorite,
-    onDescription 
 }) => {
+    const { addDescription } = useMap();
+
     return (
-        <Box className={styles.ticket} onClick={() => onDescription({id, title, description, distance, position, isFavorite})}>
+        <Box
+            className={styles.ticket}
+            onClick={() => addDescription({id, title, description, distance, position, isFavorite})}
+        >
             <OpenWithIcon />
             {isFavorite && <StarIcon />}
             <Box>

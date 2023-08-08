@@ -1,30 +1,32 @@
-import React, { FC, useCallback } from 'react';
-
-import { DELETE_WAY, ADD_TO_FAVORITE } from '../../constants';
-import { WayType } from '../../types';
+import React, { FC } from 'react';
 
 import { Map } from '../Map';
 import { Grid, Card, CardHeader, CardContent, Typography, CardActions, Button } from '@mui/material';
 
-import { useDispatch } from 'react-redux';
+import { useMap } from "../../hooks/map";
+import { useWay } from "../../hooks/way";
 
 interface DescriptionProps {
     isLoaded: boolean,
-    description: WayType;
-    setDescription: (value: null) => void;
 }
 
-export const Description: FC<DescriptionProps> = ({ description, isLoaded, setDescription }) => {
-    const dispatch = useDispatch();
+export const Description: FC<DescriptionProps> = ({ isLoaded }) => {
+    const { description, addDescription } = useMap();
+    const { deleteWAY, addToFavorite } = useWay();
 
-    const onRemoveWay = useCallback(() => {
-        dispatch({ type: DELETE_WAY, payload: {id: description.id } });
-        setDescription(null);
-    }, [description]);
+    const onRemoveWay = () => {
+        if (description?.id) {
+            deleteWAY(description.id);
+            addDescription(null);
+        }
 
-    const onAddToFavorite = useCallback(() => {
-        dispatch({ type: ADD_TO_FAVORITE, payload: {id: description.id, item: { isFavorite: true } } });
-    }, [description]);
+    };
+
+    const onAddToFavorite = (): void => {
+        if (description?.id) {
+            addToFavorite(description?.id);
+        }
+    }
 
     return (
         <Grid container justifyContent='center' wrap='wrap'>
@@ -51,7 +53,7 @@ export const Description: FC<DescriptionProps> = ({ description, isLoaded, setDe
                 </CardContent>
             </Card>}
             <Grid item>
-                {isLoaded && <Map markers={description.position} />}
+                {isLoaded && <Map />}
             </Grid>
         </Grid>
     )

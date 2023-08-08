@@ -1,3 +1,23 @@
+export type State = {
+    modal: Modal;
+    map: Map;
+    way: Ways;
+};
+
+export type Ways = {
+    ways: WayType[];
+};
+
+export type Map = {
+    markers: MarkerType[];
+    distance: string;
+    description: WayType | null;
+};
+
+export type Modal = {
+    isOpen: boolean;
+};
+
 export enum TravelMode  {
     BICYCLING = 'BICYCLING',
     DRIVING = 'DRIVING',
@@ -9,19 +29,6 @@ export type MarkerType = {
     lat: number,
     lng: number,
 }
-
-export type ActionType = {
-    type: string,
-    payload: WayType | ActionRemoveType | any,
-}
-
-export type ActionRemoveType = {
-    id: number,
-}
-
-export type ActionFavoriteType = {
-    item: { isFavorite: boolean },
-} & ActionRemoveType 
 
 export type WayType = {
     id: number,
